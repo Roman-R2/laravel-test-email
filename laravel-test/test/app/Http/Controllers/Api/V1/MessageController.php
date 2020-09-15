@@ -34,23 +34,22 @@ class MessageController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        $message = Message::make([
-            'message' => $request['message'],
-            'remote_ip' => $request->getClientIp(),
-            'token' => Uuid::uuid4(),
-            'expired' => $this->service->getExpiredDate(),
-        ]);
+        //Сравнить токен
 
-        $cookie = Cookie::make('client_token', 'MyValue', 60);
-        $response = response()->json(
+
+
+        $token = $this->service->getToken();
+
+        $message= $this->service->saveMessageToDB($request, $token);
+
+        $jsonResponse = response()->json(
             $this->serializer->jsonMessage($message, $message->id),
             Response::HTTP_CREATED);
-        $response->headers->setCookie($cookie);
+
+        $this->service->setCookie($jsonResponse, $token);
 
         Mail::send(new MessageMail($message));
 
-        $message->saveOrFail();
-
-        return $response;
+        return $jsonResponse;
     }
 }

@@ -51,7 +51,7 @@ git:
 	git status
 	git add .
 	git commit -m "${M}"
-	git push
+	git push -u origin master
 
 my:
 	sudo chown -R ${USER}:${USER} laravel-test

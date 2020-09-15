@@ -9,7 +9,10 @@ use Eloquent;
 class Message extends Eloquent
 {
     protected $fillable = [
-        'message', "remote_ip", 'token', 'expired_date'
+        'message',
+        "remote_ip",
+        'token',
+        'expired_date'
     ];
 
     protected $hidden = [

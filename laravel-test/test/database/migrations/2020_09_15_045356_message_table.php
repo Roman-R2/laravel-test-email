@@ -13,7 +13,7 @@ class MessageTable extends Migration
             $table->text('message');
             $table->string('remote_ip');
             $table->string('token');
-            $table->dateTime('sent_at');
+            $table->dateTime('expired_date');
             $table->timestamps();
         });
     }
