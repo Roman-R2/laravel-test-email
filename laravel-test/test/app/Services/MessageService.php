@@ -47,7 +47,7 @@ class MessageService
         return Uuid::uuid4();
     }
 
-    public function checkToken(Request $request)
+    public function checkToken(Request $request): bool
     {
         $requestToken = $request->cookie('client_token');
 
@@ -56,17 +56,27 @@ class MessageService
         where('expired_date', '>=', Carbon::now())->
         get();
 
-        return $query->count() ?  true : false;
+        return $query->count() ? true : false;
     }
 
-    public function checkIP(Request $request)
+    public function checkIP(Request $request): bool
     {
         $query = Message::
         where('remote_ip', '=', $request->getClientIp())->
         where('expired_date', '>=', Carbon::now())->
         get();
 
-        return $query->count() ?  true : false;
+        return $query->count() ? true : false;
+    }
+
+    public function checkForSpam(Request $request): bool
+    {
+        $isSpam = false;
+
+        !$this->checkToken($request) ?: $isSpam = true;
+        !$this->checkIP($request) ?: $isSpam = true;
+
+        return $isSpam;
     }
 
 }

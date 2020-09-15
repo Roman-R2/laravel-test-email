@@ -36,13 +36,7 @@ class MessageController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        if ($this->service->checkToken($request)) {
-            return response()->json(
-                $this->serializer->jsonErrorMessage('You are sending messages too often, please try again later.'),
-                Response::HTTP_ALREADY_REPORTED);
-        }
-
-        if ($this->service->checkIP($request)) {
+        if ($this->service->checkForSpam($request)) {
             return response()->json(
                 $this->serializer->jsonErrorMessage('You are sending messages too often, please try again later.'),
                 Response::HTTP_ALREADY_REPORTED);
