@@ -10,10 +10,29 @@ class MessageSerializer
 {
     public function jsonMessage(Message $message, $messageDbId): array
     {
+        return $this->createResponseArray(
+            $messageDbId,
+            $message->getAttribute('message')
+        );
+    }
+
+    public function jsonErrorMessage($errorMessage): array
+    {
+        return $this->createResponseArray(
+            null,
+            null,
+            [
+                $errorMessage
+            ]
+        );
+    }
+
+    public function createResponseArray($id, $message, $error = [])
+    {
         return [
-            'id' => $messageDbId,
-            'message' => $message->getAttribute('message'),
-            'error' => false,
+            'id' => $id,
+            'message' => $message,
+            'error' => $error,
         ];
     }
 }

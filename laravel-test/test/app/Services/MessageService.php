@@ -7,8 +7,10 @@ namespace App\Services;
 use App\Entity\Message;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class MessageService
@@ -43,6 +45,19 @@ class MessageService
     public function getToken()
     {
         return Uuid::uuid4();
+    }
+
+    public function checkToken(Request $request)
+    {
+        $requestToken = $request->cookie('client_token');
+
+        if ($messageFromDB = Message::where('token', '=', $requestToken)->find(1)) {
+            $expired_date = $messageFromDB->expired_date;
+
+            return $expired_date >= Carbon::now();
+        } else {
+            return false;
+        }
     }
 
 }

@@ -9,9 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Mail\MessageMail;
 use App\Serializers\MessageSerializer;
 use App\Services\MessageService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Ramsey\Uuid\Uuid;
 
@@ -34,13 +36,15 @@ class MessageController extends Controller
             'message' => 'required|string|max:1000',
         ]);
 
-        //Сравнить токен
+        if ($this->service->checkToken($request)) {
+            return response()->json(
+                $this->serializer->jsonErrorMessage('You are sending messages too often, please try again later.'),
+                Response::HTTP_ALREADY_REPORTED);
+        }
 
+Ь=        $token = $this->service->getToken();
 
-
-        $token = $this->service->getToken();
-
-        $message= $this->service->saveMessageToDB($request, $token);
+        $message = $this->service->saveMessageToDB($request, $token);
 
         $jsonResponse = response()->json(
             $this->serializer->jsonMessage($message, $message->id),
