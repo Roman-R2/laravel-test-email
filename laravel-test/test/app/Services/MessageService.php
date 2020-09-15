@@ -51,13 +51,22 @@ class MessageService
     {
         $requestToken = $request->cookie('client_token');
 
-        if ($messageFromDB = Message::where('token', '=', $requestToken)->find(1)) {
-            $expired_date = $messageFromDB->expired_date;
+        $query = Message::
+        where('token', '=', $requestToken)->
+        where('expired_date', '>=', Carbon::now())->
+        get();
 
-            return $expired_date >= Carbon::now();
-        } else {
-            return false;
-        }
+        return $query->count() ?  true : false;
+    }
+
+    public function checkIP(Request $request)
+    {
+        $query = Message::
+        where('remote_ip', '=', $request->getClientIp())->
+        where('expired_date', '>=', Carbon::now())->
+        get();
+
+        return $query->count() ?  true : false;
     }
 
 }

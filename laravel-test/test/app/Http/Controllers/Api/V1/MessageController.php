@@ -42,7 +42,13 @@ class MessageController extends Controller
                 Response::HTTP_ALREADY_REPORTED);
         }
 
-       $token = $this->service->getToken();
+        if ($this->service->checkIP($request)) {
+            return response()->json(
+                $this->serializer->jsonErrorMessage('You are sending messages too often, please try again later.'),
+                Response::HTTP_ALREADY_REPORTED);
+        }
+
+        $token = $this->service->getToken();
 
         $message = $this->service->saveMessageToDB($request, $token);
 
