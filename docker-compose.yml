@@ -1,0 +1,76 @@
+version: '3'
+services:
+  laravel-nginx:
+    container_name: laravel-nginx
+    build:
+      context: laravel-test/docker/development
+      dockerfile: nginx.docker
+    volumes:
+      - ./laravel-test:/app
+    depends_on:
+      - laravel-php-fpm
+    ports:
+      - "8080:80"
+
+  laravel-php-fpm:
+    container_name: laravel-php-fpm
+    build:
+      context: laravel-test/docker/development
+      dockerfile: php-fpm.docker
+    volumes:
+      - ./laravel-test:/app
+    depends_on:
+      - laravel-postgres
+      - laravel-redis
+  
+  laravel-php-cli:
+    container_name: laravel-php-cli
+    build:
+      context: laravel-test/docker/development
+      dockerfile: php-cli.docker
+    volumes:
+      - ./laravel-test:/app
+    depends_on:
+      - laravel-postgres
+    working_dir: /app/test
+  
+  laravel-postgres:
+    container_name: laravel-postgres
+    image: postgres:11.2-alpine
+    volumes:
+      - laravel-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: App
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: App
+    ports:
+      - "54321:5432"
+
+  laravel-redis:
+    image: redis:3.0-alpine
+    volumes:
+      - laravel-redis:/data
+    command:
+      - 'redis-server'
+      - '--requirepass secret'
+
+  laravel-node-cli:
+    container_name: laravel-node-cli
+    build:
+      context: laravel-test/docker/development
+      dockerfile: node.docker
+    volumes:
+      - ./laravel-test:/app
+    working_dir: /app/test
+
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - "8081:8025"
+
+
+volumes:
+  laravel-postgres:
+  laravel-redis:
+
