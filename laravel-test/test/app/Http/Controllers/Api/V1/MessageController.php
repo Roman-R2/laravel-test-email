@@ -42,7 +42,7 @@ class MessageController extends Controller
                 Response::HTTP_ALREADY_REPORTED);
         }
 
-Ь=        $token = $this->service->getToken();
+       $token = $this->service->getToken();
 
         $message = $this->service->saveMessageToDB($request, $token);
 
