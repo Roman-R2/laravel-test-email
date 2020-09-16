@@ -6,7 +6,7 @@ namespace Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 
-class AdvertsTest extends TestCase
+class MessageTest extends TestCase
 {
     public function testGetAdvertsList(): void
     {

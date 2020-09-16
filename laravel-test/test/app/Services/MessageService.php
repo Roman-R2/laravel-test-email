@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Entity\Message;
+use App\Serializers\MessageSerializer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class MessageService
@@ -77,6 +76,10 @@ class MessageService
         !$this->checkIP($request) ?: $isSpam = true;
 
         return $isSpam;
+    }
+
+    public function jsonResponse($messageArray, $status) {
+        return response()->json($messageArray, $status);
     }
 
 }

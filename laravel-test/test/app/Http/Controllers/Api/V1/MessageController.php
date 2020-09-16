@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Entity\Message;
 use App\Http\Controllers\Controller;
 use App\Mail\MessageMail;
 use App\Serializers\MessageSerializer;
 use App\Services\MessageService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Ramsey\Uuid\Uuid;
 
 class MessageController extends Controller
 {
@@ -37,22 +32,24 @@ class MessageController extends Controller
         ]);
 
         if ($this->service->checkForSpam($request)) {
-            return response()->json(
+            return $this->service->jsonResponse(
                 $this->serializer->jsonErrorMessage('You are sending messages too often, please try again later.'),
-                Response::HTTP_ALREADY_REPORTED);
+                Response::HTTP_ALREADY_REPORTED
+            );
         }
 
         $token = $this->service->getToken();
 
         $message = $this->service->saveMessageToDB($request, $token);
 
-        $jsonResponse = response()->json(
+        $jsonResponse = $this->service->jsonResponse(
             $this->serializer->jsonMessage($message, $message->id),
-            Response::HTTP_CREATED);
+            Response::HTTP_CREATED
+        );
 
         $this->service->setCookie($jsonResponse, $token);
 
-        Mail::send(new MessageMail($message));
+        Mail::queue(new MessageMail($message));
 
         return $jsonResponse;
     }
