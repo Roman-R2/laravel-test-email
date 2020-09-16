@@ -50,6 +50,9 @@ seeds:
 horizon:
 	docker-compose run --rm laravel-php-cli php artisan horizon
 
+swagger:
+	docker-compose run --rm laravel-php-cli vendor/bin/openapi -o public/docs/swagger.json app/Http
+
 git:
 	git status
 	git add .

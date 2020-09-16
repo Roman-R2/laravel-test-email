@@ -8,6 +8,15 @@ use App\Entity\Message;
 
 class MessageSerializer
 {
+    /**
+     * @OA\Schema(
+     *   schema="product_id",
+     *   type="integer",
+     *   format="int64",
+     *   description="The unique identifier of a product in our catalog"
+     * )
+     */
+
     public function jsonMessage(Message $message, $messageDbId): array
     {
         return $this->createResponseArray(

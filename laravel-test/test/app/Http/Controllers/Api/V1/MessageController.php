@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * @OA\Info(title="Message API", version="1.0")
+ */
 class MessageController extends Controller
 {
     private $serializer;
@@ -22,6 +25,21 @@ class MessageController extends Controller
         $this->serializer = $serializer;
         $this->service = $service;
     }
+
+    /**
+     *  @OA\Post(
+     *      path="/api/v1/message",
+     *      summary="Отправка сообщения на фиксированный email адрес",
+     *      @OA\Response(
+     *          response="201",
+     *          description="Успешная отправка сообщения",
+     *      ),
+     *      @OA\Response(
+     *          response="208",
+     *          description="Слишком частая отправка сообщений",
+     *      )
+     *  )
+     */
 
     public function sendMessage(Request $request)
     {

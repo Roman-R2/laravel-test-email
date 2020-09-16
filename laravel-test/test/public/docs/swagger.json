@@ -1,0 +1,23 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Message API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/v1/message": {
+            "post": {
+                "summary": "Отправка сообщения на фиксированный email адрес",
+                "operationId": "App\\Http\\Controllers\\Api\\V1\\MessageController::sendMessage",
+                "responses": {
+                    "201": {
+                        "description": "Успешная отправка сообщения"
+                    },
+                    "208": {
+                        "description": "Слишком частая отправка сообщений"
+                    }
+                }
+            }
+        }
+    }
+}
